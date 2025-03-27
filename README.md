@@ -1,19 +1,18 @@
 # epubtomd
 
-`epubtomd` 是一个用 Golang 实现的工具，它能够将 EPUB 文件转换为 Markdown 文件。该工具支持提取 EPUB 文件的元数据，如标题、作者等，同时可以处理
-EPUB 中的图片，并将其复制到指定目录或上传到 S3 存储桶。此外，它还能将 EPUB 中的 XHTML 章节文件转换为 Markdown
-格式，并生成一个包含所有章节链接的 `README.md` 文件。
+`epubtomd` 是一个用 Golang 编写的工具，可以将 EPUB 电子书转换为 Markdown 格式。它不仅支持提取元数据（如标题、作者等），还能处理书中的图片，并将其保存到本地或上传到
+S3。此外，它还能将 EPUB 的 XHTML 章节转换为 Markdown，并自动生成包含所有章节链接的 `README.md` 文件。
 
-## 功能特性
+## 主要功能
 
-- **元数据提取**：从 EPUB 文件中提取标题、作者、语言、版本等元数据。
-- **图片处理**：支持将 EPUB 中的图片复制到本地目录或上传到 S3 存储桶。
-- **XHTML 转换**：将 EPUB 中的 XHTML 章节文件转换为 Markdown 格式。
-- **Markdown 生成**：生成一个包含所有章节链接的 `README.md` 文件。
+- **元数据提取**：获取 EPUB 书籍的标题、作者、语言、版本等信息。
+- **图片处理**：支持将书中的图片复制到指定目录或上传至 S3。
+- **XHTML 转换**：将 EPUB 章节转换为 Markdown 格式，保留原有结构。
+- **自动生成目录**：创建 `README.md`，方便查看和导航章节内容。
 
 ## 安装
 
-确保你已经安装了 Go 1.23 或更高版本。然后，使用以下命令下载并安装 `epubtomd`：
+请确保你的 Go 版本为 1.23 或更高，然后运行以下命令安装 `epubtomd`：
 
 ```sh
 go get github.com/lifei6671/epubtomd
@@ -34,8 +33,7 @@ import (
 func main() {
 	epubPath := "./testdata/history.epub"
 	outputDir := "./history"
-	err := epubtomd.Convert(epubPath, outputDir)
-	if err != nil {
+	if err := epubtomd.Convert(epubPath, outputDir); err != nil {
 		fmt.Printf("转换失败: %v\n", err)
 	} else {
 		fmt.Println("转换成功")
@@ -43,9 +41,9 @@ func main() {
 }
 ```
 
-### 测试代码
+### 运行测试
 
-项目中包含了多个测试文件，用于验证各个功能的正确性。你可以使用以下命令运行所有测试：
+项目包含多个测试文件，可以使用以下命令执行所有测试：
 
 ```sh
 go test ./...
@@ -53,25 +51,27 @@ go test ./...
 
 ## 代码结构
 
-- **`epub.go`**：负责解压 EPUB 文件，解析 OPF 文件，提取元数据和章节、图片文件列表。
-- **`converter.go`**：实现了将 XHTML 文件转换为 Markdown 文件的功能。
-- **`image.go`**：定义了图片处理接口和本地图片处理实现。
-- **`image_s3.go`**：实现了将图片上传到 S3 存储桶的功能。
-- **`generator.go`**：定义了 Markdown 生成接口和简单的 Markdown 生成器实现。
-- **`epubtomd.go`**：提供了将 EPUB 文件转换为 Markdown 文件的主要功能。
-- **`util.go`**：包含了一些辅助函数，如安全关闭文件和路径解析。
+- **`epub.go`**：解压 EPUB，解析 OPF 文件，提取元数据、章节和图片列表。
+- **`converter.go`**：负责将 XHTML 章节转换为 Markdown。
+- **`image.go`**：定义图片处理逻辑，包括本地存储。
+- **`image_s3.go`**：实现将图片上传至 S3 的功能。
+- **`generator.go`**：用于生成 Markdown 目录和章节内容。
+- **`epubtomd.go`**：核心逻辑，负责 EPUB 到 Markdown 的转换。
+- **`util.go`**：提供辅助函数，如文件操作和路径解析。
 
-## 依赖项
+## 依赖
 
-项目依赖了多个第三方库，具体可以查看 `go.mod` 文件。以下是一些主要的依赖项：
+`epubtomd` 依赖多个 Golang 库，主要包括：
 
-- `github.com/JohannesKaufmann/html-to-markdown`：用于将 HTML 内容转换为 Markdown 格式。
-- `github.com/aws/aws-sdk-go-v2`：用于与 AWS S3 存储桶进行交互。
-- `github.com/PuerkitoBio/goquery`：用于解析 XHTML 文件。
+- `github.com/JohannesKaufmann/html-to-markdown`（HTML 转 Markdown）
+- `github.com/aws/aws-sdk-go-v2`（S3 交互）
+- `github.com/PuerkitoBio/goquery`（XHTML 解析）
+
+详细依赖可查看 `go.mod`。
 
 ## 贡献
 
-如果你发现了 bug 或者有新的功能建议，欢迎提交 issue 或 pull request。在提交 pull request 之前，请确保你的代码通过了所有测试，并且遵循了项目的代码风格。
+欢迎提交 issue 或 pull request。如果有 bug 或改进建议，请在提交 PR 之前确保代码通过所有测试，并符合项目代码风格。
 
 ## 许可证
 
