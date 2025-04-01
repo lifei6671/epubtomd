@@ -27,6 +27,7 @@ func NewBasicXHTMLConverter(f fs.FS) XHTMLConverter {
 }
 func (c *BasicXHTMLConverter) Convert(filename string) (string, string, error) {
 	// 使用 goquery 解析 XHTML，转换为 Markdown
+	filename = strings.ReplaceAll(filename, "\\", "/") // 统一替换所有反斜杠为正向斜杠
 	file, err := c.f.Open(filename)
 	if err != nil {
 		return "", "", fmt.Errorf("can't open file %s: %w", filename, err)

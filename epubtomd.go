@@ -60,6 +60,7 @@ func Convert(filename string, output string) error {
 						altText = "image" // 默认 alt 文本
 					}
 					imagePath := filepath.Join(metadata.BasePath, localPath)
+					imagePath = strings.ReplaceAll(imagePath, "\\", "/") // 替换为正斜杠以兼容 Windows 和 Unix 系统
 					ext := filepath.Ext(localPath)
 
 					rename, err := imageHandler.CopyWithRename(imagePath, func(b []byte) string {
