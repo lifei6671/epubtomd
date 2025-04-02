@@ -3,10 +3,13 @@ package epubtomd
 import (
 	"fmt"
 	"io/fs"
+	"path/filepath"
 	"strings"
 
-	md "github.com/JohannesKaufmann/html-to-markdown"
-	"github.com/JohannesKaufmann/html-to-markdown/plugin"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/converter"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/commonmark"
+
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -26,6 +29,8 @@ func NewBasicXHTMLConverter(f fs.FS) XHTMLConverter {
 	}
 }
 func (c *BasicXHTMLConverter) Convert(filename string) (string, string, error) {
+	// 用来修正畸形的文件路径
+	filename = filepath.Clean(filename)
 	// 使用 goquery 解析 XHTML，转换为 Markdown
 	file, err := c.f.Open(filename)
 	if err != nil {
@@ -50,13 +55,14 @@ func (c *BasicXHTMLConverter) Convert(filename string) (string, string, error) {
 
 // HtmlToMarkdown 将 html 格式内容转换为 markdown 格式
 func HtmlToMarkdown(htmlContent string) (string, error) {
-	converter := md.NewConverter("", true, nil)
-	converter.Use(plugin.Table())
-	converter.Use(plugin.TaskListItems())
-	converter.Use(plugin.YoutubeEmbed())
-	converter.Use(plugin.EXPERIMENTALMoveFrontMatter())
+	convert := converter.NewConverter(converter.WithPlugins(
+		base.NewBasePlugin(),
+		commonmark.NewCommonmarkPlugin(
+			commonmark.WithStrongDelimiter("__"),
+		),
+	))
 
-	markdownContent, err := converter.ConvertString(htmlContent)
+	markdownContent, err := convert.ConvertString(htmlContent)
 	if err != nil {
 		return "", fmt.Errorf("convert markdown content: %w", err)
 	}

@@ -16,6 +16,7 @@ var localImageRegex = regexp.MustCompile(`!\[(.*?)?\]\(([^:\)]+)\)`) // 兼容�
 
 // Convert 将指定路径的epub文件转换为markdown文件，并报错到指定路径
 func Convert(filename string, output string) error {
+	filename = filepath.Clean(filename)
 	reader := NewZipEpubReader()
 	r, err := reader.Extract(filename)
 	if err != nil {
@@ -59,7 +60,7 @@ func Convert(filename string, output string) error {
 					if altText == "" {
 						altText = "image" // 默认 alt 文本
 					}
-					imagePath := filepath.Join(metadata.BasePath, localPath)
+					imagePath := filepath.Clean(filepath.Join(metadata.BasePath, localPath))
 					ext := filepath.Ext(localPath)
 
 					rename, err := imageHandler.CopyWithRename(imagePath, func(b []byte) string {
