@@ -9,6 +9,8 @@ import (
 	"github.com/JohannesKaufmann/html-to-markdown/v2/converter"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
 	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/commonmark"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/strikethrough"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/table"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -60,6 +62,8 @@ func HtmlToMarkdown(htmlContent string) (string, error) {
 		commonmark.NewCommonmarkPlugin(
 			commonmark.WithStrongDelimiter("__"),
 		),
+		table.NewTablePlugin(),
+		strikethrough.NewStrikethroughPlugin(),
 	))
 
 	markdownContent, err := convert.ConvertString(htmlContent)
