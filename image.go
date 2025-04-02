@@ -62,9 +62,10 @@ func (h *LocalImageHandler) CopyWithRename(srcImagePath string, namePathFn func(
 		return "", fmt.Errorf("error creating file %s: %w", fullLocalImagePath, err)
 	}
 	defer SaleClose(localFile)
-	_, err = io.Copy(localFile, file)
+	n, err := localFile.Write(body)
 	if err != nil {
 		return "", fmt.Errorf("error copying file %s: %w", fullLocalImagePath, err)
 	}
+	fmt.Println("copy file", srcImagePath, "to", fullLocalImagePath, "size", n)
 	return dstImagePath, nil
 }

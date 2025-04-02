@@ -1,10 +1,20 @@
 package epubtomd
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/smartystreets/goconvey/convey"
 )
+
+func TestNewBasicXHTMLConverter(t *testing.T) {
+	htmlContent := "\n<div class=\"chatu\"><img alt=\"\" src=\"Image00020.jpg\"/>\n<p class=\"tushuo\">图20 创作者：杰克逊·波洛克灵感涌现的一刻</p>\n</div>\n\n\n"
+	convey.Convey("TestHtmlToMarkdown", t, func() {
+		result, err := HtmlToMarkdown(htmlContent)
+		convey.So(err, convey.ShouldBeNil)
+		fmt.Println(result)
+	})
+}
 
 func TestBasicXHTMLConverter_Convert(t *testing.T) {
 	convey.Convey("TestBasicXHTMLConverter_Convert", t, func() {
